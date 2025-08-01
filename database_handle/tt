@@ -1,0 +1,45 @@
+# === db_insert.py ===
+
+import time
+from datetime import datetime
+from database_handle import db_handler
+from utils import get_ideal_wire_count
+from logger_config import logger  
+
+
+def insert_to_db(result_dict, lock, mcid):
+    logger.info("📓 DB Insert thread started")
+    last_insert = datetime.now()
+
+    while True:
+        try:
+            now = datetime.now()
+            if (now - last_insert).total_seconds() >= 60:
+                last_insert = now
+
+                # Atomic snapshot and extra logging for debugging
+                with lock:
+                    snapshot = {
+                        "LCG": result_dict.get("LCG", {}).copy(),
+                        "PWLC": result_dict.get("PWLC", {}).copy()
+                    }
+                    lcg = int(snapshot["LCG"].get("mode", 0))
+                    pwlc = int(snapshot["PWLC"].get("mode", 0))
+                    total = lcg + pwlc
+                    logger.debug(f"📊 Mode counts → LCG: {lcg}, PWLC: {pwlc}, Total: {total}")
+                    rtms_count = get_ideal_wire_count()
+                    logger.debug(f"🔄 RTMS Ideal Count: {rtms_count}")
+                    db_handler.insert_wire_count_data(
+                        furnace_name="Furnace-3348",
+                        lcg_wire=lcg,
+                        pwlc_wire=pwlc,
+                        total_wire=total,
+                        rtms=rtms_count,
+                        mcid=mcid,
+                        timestamp=now.replace(second=0, microsecond=0)
+                    )
+                    logger.info(f"✅ Inserted into DB → LCG: {lcg}, PWLC: {pwlc}, Total: {total}, RTMS: {rtms_count}")
+        except Exception as e:
+            logger.exception("❌ Error inserting into DB")
+
+        time.sleep(5)

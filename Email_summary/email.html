@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        {{ css }}
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji" rel="stylesheet">
+</head>
+<body>
+    <h2>Furnace-3348 Wire Count Summary</h2>
+    <h3>{{ shift_time }}</h3>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>MCID</th>
+                    <th>LCG Count</th>
+                    <th>PWLC Count</th>
+                    <th>Total Count</th>
+                    <th>RTMS Count</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+<tbody>
+{% for row in data %}
+    <tr>
+        <td>{{ row['MCID'] }}</td>
+        <td>{{ row['LCG Count'] }}</td>
+        <td>{{ row['PWLC Count'] }}</td>
+        <td>{{ row['TOTAL Count'] }}</td>
+        <td>{{ row['RTMS Count'] }}</td>
+        <td>{{ row['Time'] }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+
+        </table>
+    </div>
+    <h4>{{shift_name}} Graph</h4>
+    <div class="image-container">
+        <img src="cid:graph1" alt="Shift Graph" style="max-width: 100%;"> 
+    </div>
+</body>
+</html>

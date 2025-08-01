@@ -1,0 +1,11 @@
+requests
+opencv-python
+ultralytics
+pandas
+sqlalchemy
+python-dotenv
+jinja2
+Pillow
+apscheduler
+matplotlib
+psycopg2-binary
